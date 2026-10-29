@@ -1,0 +1,25 @@
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+*.ico
+*.bmp
+*.tif
+*.tiff
+*.avif
+
+# Uppercase image extensions
+*.PNG
+*.JPG
+*.JPEG
+*.GIF
+*.WEBP
+*.SVG
+*.ICO
+*.BMP
+*.TIF
+*.TIFF
+*.AVIF

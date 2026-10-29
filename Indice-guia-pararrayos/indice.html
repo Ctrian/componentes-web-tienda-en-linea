@@ -1,5 +1,5 @@
 <style>
-.pdc-toc {
+    .pdc-toc {
         background: #f7f7f5;
         border-left: 4px solid var(--ast-global-color-0);
         border-radius: 0 6px 6px 0;
@@ -94,115 +94,116 @@
         }
     }
 
-    /* ── TOC Flotante (solo desktop ≥1024px) ────────────── */
     .pdc-toc-float {
-        display: none;
+        display: flex;
+        align-items: center;
+        position: fixed;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 9990;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
     }
 
-    @media (min-width: 1024px) {
-        .pdc-toc-float {
-            display: flex;
-            align-items: center;
-            position: fixed;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 9990;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
+    .pdc-toc-float--visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
 
-        .pdc-toc-float--visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
+    .pdc-toc-float__btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 0;
+        background: var(--ast-global-color-0);
+        color: #fff;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.18);
+        flex-shrink: 0;
+        transition: background 0.2s ease;
+        cursor: pointer;
+        font: inherit;
+    }
 
-        .pdc-toc-float__btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 44px;
-            background: var(--ast-global-color-0);
-            color: #fff;
-            border-radius: 0 6px 6px 0;
-            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.18);
-            flex-shrink: 0;
-            transition: background 0.2s ease;
-            cursor: default;
-        }
+    .pdc-toc-float:hover .pdc-toc-float__btn {
+        background: var(--ast-global-color-1, #005580);
+    }
 
-        .pdc-toc-float:hover .pdc-toc-float__btn {
-            background: var(--ast-global-color-1, #005580);
-        }
+    .pdc-toc-float__btn:focus-visible {
+        outline: 3px solid #fff;
+        outline-offset: -5px;
+    }
 
-        .pdc-toc-float__panel {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-left: none;
-            border-radius: 0 8px 8px 0;
-            box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 0;
-            width: 0;
-            max-height: 70vh;
-            overflow: hidden;
-            opacity: 0;
-            pointer-events: none;
-            transition:
-                width 0.28s ease,
-                opacity 0.28s ease;
-            white-space: nowrap;
-        }
+    .pdc-toc-float__panel {
+        box-sizing: border-box;
+        width: 0;
+        max-height: 70vh;
+        padding: 0;
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+        white-space: nowrap;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-left: 0;
+        border-radius: 0 8px 8px 0;
+        box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.1);
+        transition: width 0.28s ease, opacity 0.28s ease;
+    }
 
-        .pdc-toc-float:hover .pdc-toc-float__panel {
-            width: 272px;
-            opacity: 1;
-            pointer-events: auto;
-            overflow-y: auto;
-            white-space: normal;
-            padding: 16px 18px;
-        }
+    .pdc-toc-float:hover .pdc-toc-float__panel,
+    .pdc-toc-float--open .pdc-toc-float__panel {
+        width: min(272px, calc(100vw - 44px));
+        opacity: 1;
+        pointer-events: auto;
+        overflow-y: auto;
+        white-space: normal;
+        padding: 16px 18px;
+    }
 
-        .pdc-toc-float__title {
-            font-family: Lato, sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #999;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-        }
+    .pdc-toc-float__title {
+        font-family: Lato, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #999;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+    }
 
-        .pdc-toc-float__list {
-            margin: 0;
-            padding-left: 16px;
-            font-family: Lato, sans-serif;
-            font-size: 13.5px;
-            line-height: 1.65;
-            list-style: decimal;
-        }
+    .pdc-toc-float__list {
+        margin: 0;
+        padding-left: 16px;
+        font-family: Lato, sans-serif;
+        font-size: 13.5px;
+        line-height: 1.65;
+        list-style: decimal;
+    }
 
-        .pdc-toc-float__list li {
-            margin-bottom: 5px;
-        }
+    .pdc-toc-float__list li {
+        margin-bottom: 5px;
+    }
 
-        .pdc-toc-float__list a {
-            color: #333;
-            text-decoration: none;
-            transition: color 0.15s;
-        }
+    .pdc-toc-float__list a {
+        color: #333;
+        text-decoration: none;
+        transition: color 0.15s;
+    }
 
-        .pdc-toc-float__list a:hover {
-            color: var(--ast-global-color-0);
-        }
+    .pdc-toc-float__list a:hover {
+        color: var(--ast-global-color-0);
+    }
 
-        .pdc-toc-float__list a.pdc-toc--active {
-            color: var(--ast-global-color-0);
-            font-weight: 700;
-        }
+    .pdc-toc-float__list a.pdc-toc--active {
+        color: var(--ast-global-color-0);
+        font-weight: 700;
     }
 </style>
 
@@ -210,7 +211,8 @@
     <details class="pdc-toc__details" open="">
         <summary class="pdc-toc__summary">
             Tabla de contenidos
-            <svg class="pdc-toc__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="pdc-toc__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
         </summary>
@@ -257,14 +259,16 @@
 </nav>
 
 <div class="pdc-toc-float" id="pdc-toc-float" role="navigation" aria-label="Tabla de contenidos flotante">
-    <div class="pdc-toc-float__btn" aria-hidden="true">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+    <button class="pdc-toc-float__btn" type="button" aria-expanded="false" aria-controls="pdc-toc-float-panel"
+        aria-label="Abrir tabla de contenidos">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
-    </div>
-    <div class="pdc-toc-float__panel">
+    </button>
+    <div class="pdc-toc-float__panel" id="pdc-toc-float-panel">
         <div class="pdc-toc-float__title">Tabla de contenidos</div>
         <ol class="pdc-toc-float__list">
             <li><a href="#que-es-pdc">¿Qué es un pararrayos PDC?</a></li>
@@ -290,6 +294,23 @@
 
         var floatLinks = floatToc.querySelectorAll("a");
 
+        /* Control básico para abrir y cerrar mediante clic */
+        var floatButton = floatToc.querySelector(".pdc-toc-float__btn");
+        var floatPanel = document.getElementById("pdc-toc-float-panel");
+
+        if (!floatButton || !floatPanel) return;
+
+        function setMenuOpen(isOpen) {
+            floatToc.classList.toggle("pdc-toc-float--open", isOpen);
+            floatButton.setAttribute("aria-expanded", String(isOpen));
+            floatButton.setAttribute("aria-label", isOpen ? "Cerrar la tabla de contenidos" : "Abrir la tabla de contenidos");
+        }
+
+        floatButton.addEventListener("click", function () {
+            var isOpen = floatToc.classList.contains("pdc-toc-float--open");
+            setMenuOpen(!isOpen);
+        });
+
         /* Función reutilizable para marcar el link activo */
         function setActive(targetId) {
             floatLinks.forEach(function (link) {
@@ -303,6 +324,7 @@
             link.addEventListener("click", function () {
                 var id = link.getAttribute("href").replace("#", "");
                 setActive(id);
+                setMenuOpen(false);
             });
         });
 
