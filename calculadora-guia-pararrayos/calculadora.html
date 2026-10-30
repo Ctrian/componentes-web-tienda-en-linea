@@ -1,0 +1,608 @@
+<style>
+  .pdc-calc * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  .pdc-calc {
+    padding: 1.5rem;
+  }
+
+  .pdc-calc .controls {
+    background: #f7f7f5;
+    border: 0.5px solid #40a7f3;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 640px) {
+    .pdc-calc .controls {
+      grid-template-columns: 1fr;
+    }
+    .pdc-calc table {
+      font-size: 11px;
+    }
+    .pdc-calc th,
+    .pdc-calc td {
+      padding: 6px 5px;
+    }
+  }
+
+  .pdc-calc .col-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pdc-calc .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pdc-calc .field label {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.4;
+  }
+  .pdc-calc .field label sub {
+    font-size: 11px;
+  }
+  .pdc-calc .field label .info-tooltip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background: #185fa5;
+    color: white;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 6px;
+    cursor: help;
+    vertical-align: middle;
+    position: relative;
+  }
+  .pdc-calc .field label .info-tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 60%;
+    transform: translateX(-25%);
+    background: #333;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 400;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  .pdc-calc .field label .info-tooltip:hover::before {
+    content: "";
+    position: absolute;
+    bottom: 116%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: #333;
+    z-index: 1000;
+    pointer-events: none;
+  }
+
+  .pdc-calc .input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pdc-calc input[type="number"] {
+    font-family: inherit;
+    font-size: inherit;
+    width: 100px;
+    padding: 7px 10px;
+    border: 0.5px solid #4b4f58;
+    border-radius: 6px;
+    background: white;
+    transition: border-color 0.2s;
+  }
+  .pdc-calc input[type="number"].invalid {
+    border-color: #cc4400;
+    outline: none;
+  }
+  .pdc-calc input[type="number"]:focus {
+    outline: 2px solid #77c943;
+    outline-offset: 1px;
+  }
+  .pdc-calc input[type="number"].invalid:focus {
+    outline: 2px solid #cc4400;
+    outline-offset: 1px;
+  }
+  .pdc-calc .unit {
+    font-size: 14px;
+    color: #555;
+  }
+
+  /* Warning debajo del input — oculto por defecto */
+  .pdc-calc .input-warning {
+    display: none;
+    font-size: 13px;
+    color: #cc4400;
+    font-weight: 500;
+    line-height: 1.4;
+    background: #fff3f0;
+    border: 0.5px solid #cc4400;
+    border-radius: 5px;
+    padding: 7px 10px;
+  }
+  .pdc-calc .input-warning.visible {
+    display: block;
+  }
+
+  /* Nota informativa — ocupa ancho completo en el grid */
+  .pdc-calc .note {
+    grid-column: 1 / -1;
+    font-size: 14px;
+    background: #b5dbfd;
+    border: 0.5px solid #4da0b9;
+    border-radius: 6px;
+    padding: 10px 12px;
+    line-height: 1.55;
+    color: #1a3a5c;
+  }
+
+  /* Columna derecha */
+  .pdc-calc .col-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  /* Botón CTA */
+  .pdc-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #e6f1fb;
+    border: 0.5px solid #40a7f3;
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #0c447c;
+    font-weight: 500;
+    transition: background 0.15s;
+    font-family: inherit;
+    width: 100%;
+    justify-content: center;
+  }
+  .pdc-cta-btn:hover {
+    background: #b5dbfd !important;
+    color: #0c447c !important;
+    border-color: #0c447c !important;
+  }
+  .pdc-cta-btn svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+  }
+  .pdc-cta-label {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    text-align: left;
+  }
+  .pdc-cta-label span:first-child {
+    font-weight: 600;
+  }
+  .pdc-cta-label span:last-child {
+    font-size: 11px;
+    color: #185fa5;
+    font-weight: 400;
+  }
+
+  /* Modal GIF */
+  .pdc-gif-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    padding: 1rem;
+  }
+  .pdc-gif-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .pdc-gif-modal {
+    background: #fff;
+    border-radius: 12px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(10px) scale(0.98);
+    transition: transform 0.2s;
+  }
+  .pdc-gif-overlay.open .pdc-gif-modal {
+    transform: translateY(0) scale(1);
+  }
+  .pdc-gif-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 0.5px solid #ddd;
+    flex-shrink: 0;
+  }
+  .pdc-gif-header p {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+  }
+  .pdc-gif-header span {
+    font-size: 12px;
+    color: #888;
+    margin-left: 8px;
+    font-weight: 400;
+  }
+  .pdc-gif-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 22px;
+    color: #999;
+    line-height: 1;
+    padding: 0 2px;
+  }
+  .pdc-gif-close:hover {
+    color: #333;
+  }
+  .pdc-gif-body {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+  }
+  .pdc-gif-body img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Tabla */
+  .pdc-calc table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .pdc-calc thead tr {
+    background: #d7e5f6;
+  }
+  .pdc-calc th {
+    padding: 9px 10px;
+    text-align: center;
+    font-weight: 600;
+    border: 5px solid white;
+    background: #d7e5f6;
+  }
+  .pdc-calc td {
+    padding: 8px 10px;
+    border: 5px solid white;
+    text-align: center;
+  }
+  .pdc-calc td.model {
+    text-align: left;
+    font-weight: 500;
+  }
+  .pdc-calc tr:nth-child(even) {
+    background: #d7e5f6;
+  }
+  .pdc-calc tr:nth-child(odd) {
+    background: #f3f7fd;
+  }
+  .pdc-calc .badge {
+    display: inline-block;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .pdc-calc .lv1 {
+    background: #e6f1fb;
+    color: #0c447c;
+  }
+  .pdc-calc .lv2 {
+    background: #eaf3de;
+    color: #27500a;
+  }
+  .pdc-calc .lv3 {
+    background: #faeeda;
+    color: #633806;
+  }
+  .pdc-calc .lv4 {
+    background: #fcebeb;
+    color: #791f1f;
+  }
+
+  /* Segmented Control para filtro de marcas */
+  .pdc-filter-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    align-items: center;
+  }
+  .pdc-filter-label {
+    font-size: 17px;
+    font-weight: 500;
+    color: #333;
+    margin-right: 8px;
+  }
+  .pdc-filter-group {
+    display: flex;
+    gap: 2px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    padding: 2px;
+  }
+  .pdc-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .pdc-filter-btn:hover {
+    background: rgba(64, 167, 243, 0.3) !important;
+    color: #0c3d7a !important;
+  }
+  .pdc-filter-btn.active {
+    background: #40a7f3;
+    color: white;
+  }
+  .pdc-filter-btn img {
+    height: 20px;
+    width: auto;
+    object-fit: contain;
+  }
+  @media (max-width: 640px) {
+    .pdc-filter-container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .pdc-filter-group {
+      width: 100%;
+    }
+    .pdc-filter-btn {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>
+
+<div class="pdc-calc">
+  <div class="controls">
+    <div class="col-inputs">
+      <div class="field">
+        <label>
+          Altura total (H<sub>total</sub>)
+          <span class="info-tooltip" data-tooltip="Medida desde el suelo hasta la punta del pararrayos (ya incluye los 2m de separación)">i</span>
+        </label>
+        <div class="input-row">
+          <input type="number" id="pdc-htotal" min="2" max="250" value="6.00" step="0.5">
+          <span class="unit">m</span>
+        </div>
+
+        <div class="input-warning" id="pdc-warn-min">
+          ⚠ Valor insuficiente — se requiere un mínimo de 2 m de separación
+          entre la punta del PDC y el área a proteger (ap. 5.2.5 UNE
+          21186:2011). Ingrese un valor de al menos 2 m.
+        </div>
+      </div>
+    </div>
+
+    <div class="col-visual">
+      <button class="pdc-cta-btn" onclick="pdcGifOpen()">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="10" cy="10" r="8"></circle>
+          <polyline points="10,6 10,10 13,12"></polyline>
+        </svg>
+        <span class="pdc-cta-label">
+          <span>Ver fórmula paso a paso</span>
+          <span>Apartado 5.2.3.2 — UNE 21186:2011</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="note">
+      La norma UNE 21186:2011 (ap. 5.2.5) exige que la punta del PDC supere en
+      al menos <strong>2 m</strong> el punto más elevado de la zona a proteger —
+      incluyendo antenas, chimeneas y equipos de cubierta.
+    </div>
+  </div>
+
+  <div class="pdc-gif-overlay" id="pdc-gif-overlay" onclick="pdcGifBgClose(event)">
+    <div class="pdc-gif-modal">
+      <div class="pdc-gif-header">
+        <p>
+          Radio de protección R<sub>p</sub>
+          <span>UNE 21186:2011 § 5.2.3.2</span>
+        </p>
+        <button class="pdc-gif-close" onclick="pdcGifClose()">×</button>
+      </div>
+      <div class="pdc-gif-body">
+        <img src="https://res.cloudinary.com/dczpephf2/image/upload/v1775580193/formula_pdc_v3_ioo9re.gif" alt="Fórmula de radio de protección PDC — desarrollo paso a paso" loading="lazy">
+      </div>
+    </div>
+  </div>
+
+  <div class="pdc-filter-container">
+    <span class="pdc-filter-label">Filtro por marca:</span>
+    <div class="pdc-filter-group">
+      <button class="pdc-filter-btn active" data-filter="all" onclick="setFilter('all')">
+        Todas las marcas
+      </button>
+      <button class="pdc-filter-btn" data-filter="it-aubach" onclick="setFilter('it-aubach')">
+        <img src="https://difasel.com/wp-content/uploads/2025/10/it-aubach-1-e1774113671889.webp" alt="IT-AUBACH">
+        IT-AUBACH
+      </button>
+      <button class="pdc-filter-btn" data-filter="dfl-systems" onclick="setFilter('dfl-systems')">
+        <img src="https://difasel.com/wp-content/uploads/2025/12/DFL-SYSTEMS.webp" alt="DFL SYSTEMS">
+        DFL SYSTEMS
+      </button>
+    </div>
+  </div>
+
+  <table id="pdc-tabla">
+    <thead>
+      <tr>
+        <th class="left" rowspan="2">Modelo de pararrayos</th>
+        <th rowspan="2">ΔT (µs)</th>
+        <th colspan="4">Radio de protección Rp (m)</th>
+      </tr>
+      <tr>
+        <th>
+          <span class="badge lv1">Nivel I</span><br>
+          <span style="font-weight: 400; font-size: 13px">r = 20 m</span>
+        </th>
+        <th>
+          <span class="badge lv2">Nivel II</span><br>
+          <span style="font-weight: 400; font-size: 13px">r = 30 m</span>
+        </th>
+        <th>
+          <span class="badge lv3">Nivel III</span><br>
+          <span style="font-weight: 400; font-size: 13px">r = 45 m</span>
+        </th>
+        <th>
+          <span class="badge lv4">Nivel IV</span><br>
+          <span style="font-weight: 400; font-size: 13px">r = 60 m</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody id="pdc-tbody"></tbody>
+  </table>
+</div>
+
+<script>
+  (function () {
+    /* ── Modal ── */
+    var overlay = document.getElementById("pdc-gif-overlay");
+    window.pdcGifOpen = function () {
+      overlay.classList.add("open");
+    };
+    window.pdcGifClose = function () {
+      overlay.classList.remove("open");
+    };
+    window.pdcGifBgClose = function (e) {
+      if (e.target === overlay) pdcGifClose();
+    };
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") pdcGifClose();
+    });
+
+    /* ── Calculadora ── */
+    var MODELS = [
+      { name: "SENSORS S1", dt: 22, brand: "it-aubach" },
+      { name: "SENSORS S2", dt: 32, brand: "it-aubach" },
+      { name: "SENSORS S3", dt: 47, brand: "it-aubach" },
+      { name: "SENSORS S4", dt: 60, brand: "it-aubach" },
+      { name: "AIR 25", dt: 25, brand: "dfl-systems" },
+      { name: "AIR 45", dt: 45, brand: "dfl-systems" },
+      { name: "AIR 60", dt: 60, brand: "dfl-systems" },
+    ];
+    var R = [20, 30, 45, 60];
+    var activeFilter = "all";
+
+    function calcRp(r, h, delta) {
+      if (h < 2) return null;
+      if (h >= 5) return Math.sqrt(2 * r * h - h * h + delta * (2 * r + delta));
+      var rp5 = Math.sqrt(2 * r * 5 - 25 + delta * (2 * r + delta));
+      return (h * rp5) / 5;
+    }
+
+    function render() {
+      var htotal = parseFloat(document.getElementById("pdc-htotal").value) || 0;
+      var h = htotal;
+      var valid = htotal >= 2;
+
+      var input = document.getElementById("pdc-htotal");
+      var warn = document.getElementById("pdc-warn-min");
+
+      if (valid) {
+        input.classList.remove("invalid");
+        warn.classList.remove("visible");
+      } else {
+        input.classList.add("invalid");
+        warn.classList.add("visible");
+      }
+
+      var tbody = document.getElementById("pdc-tbody");
+      tbody.innerHTML = "";
+
+      // Filtrar modelos según marca activa
+      var filteredModels = MODELS.filter(function (m) {
+        if (activeFilter === "all") return true;
+        return m.brand === activeFilter;
+      });
+
+      filteredModels.forEach(function (m) {
+        var tr = document.createElement("tr");
+        var cells =
+          '<td class="model">' + m.name + "</td><td>" + m.dt + "</td>";
+        R.forEach(function (r) {
+          var rp = valid ? calcRp(r, h, m.dt) : null;
+          if (rp === null || isNaN(rp) || rp < 0) {
+            cells += '<td style="color:#aaa">—</td>';
+          } else {
+            cells +=
+              "<td><strong>" +
+              rp.toFixed(3) +
+              '</strong> <span style="font-size:12px">m</span></td>';
+          }
+        });
+        tr.innerHTML = cells;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Función para cambiar el filtro activo
+    window.setFilter = function (filter) {
+      activeFilter = filter;
+      
+      // Actualizar clases activas en los botones
+      var buttons = document.querySelectorAll(".pdc-filter-btn");
+      buttons.forEach(function (btn) {
+        btn.classList.remove("active");
+        if (btn.getAttribute("data-filter") === filter) {
+          btn.classList.add("active");
+        }
+      });
+      
+      // Re-renderizar tabla
+      render();
+    };
+
+    document.getElementById("pdc-htotal").addEventListener("input", render);
+    render();
+  })();
+</script>
